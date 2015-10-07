@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <h1>42 Coffee Cups Test Assignment</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Bio Info</h2>
+            <ul class="list-unstyled">
+                <li>Name: {{ object.first_name }}</li>
+                <li>Last name: {{ object.last_name }}</li>
+                <li>Date of birth: {{ object.birth_date }}</li>
+                <li>Bio:<p>{{ object.biography }}</p></li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <h2>Contacts</h2>
+            <ul class="list-unstyled">
+                <li>Email: {{ object.email }}</li>
+                <li>Jabber: {{ object.jabber }}</li>
+                <li>Skype: {{ object.skype }}</li>
+                <li>Other contacts: <p>{{ object.other_contacts }}</p></li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
