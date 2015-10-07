@@ -76,7 +76,7 @@ class BioViewsTests(TestCase):
                                     jabber='alexaled1@khavr.com',
                                     other_contacts='0968962750')
 
-    def test_add_reception_view(self):
+    def test_index_view(self):
         client = Client()
         response = client.get('/')
         self.assertEqual(response.status_code, 404)
