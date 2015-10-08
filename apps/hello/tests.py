@@ -33,9 +33,10 @@ class BioModelTests(TestCase):
         checked model to creating object
         :return:
         """
-        self.assertEqual(MyBio.objects.count(), 0)
-        self.create_my_bio_test_data()
         self.assertEqual(MyBio.objects.count(), 1)
+        bio = self.create_my_bio_test_data()
+        self.assertEqual(MyBio.objects.count(), 2)
+        bio.delete()
 
     def test_update_doctor(self):
         """
@@ -45,20 +46,21 @@ class BioModelTests(TestCase):
         bio = self.create_my_bio_test_data()
         bio.first_name = 'JJ'
         bio.save()
-        bio_test = MyBio.objects.get(pk=1)
+        bio_test = MyBio.objects.get(pk=2)
         self.assertEqual(str(bio_test), 'Bio data for JJ Aledinov')
+        bio.delete()
 
     def test_delete(self):
         """
         checked model to deleting object
         :return:
         """
-        self.assertEqual(MyBio.objects.count(), 0)
-        self.create_my_bio_test_data()
         self.assertEqual(MyBio.objects.count(), 1)
-        bio = MyBio.objects.get(pk=1)
+        self.create_my_bio_test_data()
+        self.assertEqual(MyBio.objects.count(), 2)
+        bio = MyBio.objects.get(pk=2)
         bio.delete()
-        self.assertEqual(MyBio.objects.count(), 0)
+        self.assertEqual(MyBio.objects.count(), 1)
 
 
 class BioViewsTests(TestCase):
@@ -78,9 +80,6 @@ class BioViewsTests(TestCase):
 
     def test_add_reception_view(self):
         client = Client()
-        response = client.get('/')
-        self.assertEqual(response.status_code, 404)
-        self.create_my_bio_test_data()
         response = client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "42 Coffee Cups Test Assignment")

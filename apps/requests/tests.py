@@ -46,9 +46,13 @@ class RequestsModelTests(TestCase):
         self.assertEqual(RequestData.objects.all().count(), 0)
 
 
-class RequestsViewsTests(TestCase):
+class RequestsViewsMiddlewareTests(TestCase):
 
-    def test_add_reception_view(self):
+    def test_requests_middleware(self):
         client = Client()
         client.get('/')
         self.assertEqual(RequestData.objects.count(), 1)
+        response = client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "42 Coffee Cups Test Assignment")
+        self.assertEqual(response.context['object'].last_name, 'Aledinov')

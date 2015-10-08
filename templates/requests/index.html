@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <h1>42 Coffee Cups Test Assignment</h1>
+    </div>
+
+    <div class="row">
+        <h2>({{ new_requests }}) Requests</h2>
+        <table class="table table-striped">
+        <tr>
+            <th>
+                Http request
+            </th>
+            <th>
+                Remote address
+            </th>
+            <th>
+                Date/time
+            </th>
+        </tr>
+            {% for request in object_list %}
+
+                {% if not request.viewed %}
+                    <tr class="bold-font">
+                {% else %}
+                    <tr>
+                {% endif %}
+                    <td>{{ request.http_request }}</td>
+                    <td>{{ request.remote_addr }}</td>
+                    <td>{{ request.date_time }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+
+    <a href="{% url 'home' %}">home</a>
+
+{% endblock %}
