@@ -79,6 +79,16 @@ class BioModelTests(CleanTestCase):
 
 class BioViewsTests(CleanTestCase):
 
+    def setUp(self):
+        """
+        Avoid load initial fixtures
+        :return:
+        """
+        management.call_command('flush',
+                                load_initial_data=False,
+                                verbosity=0,
+                                interactive=False)
+
     def create_my_bio_test_data(self,
                                 first_name='Oleksii',
                                 last_name='Aledinov'):
