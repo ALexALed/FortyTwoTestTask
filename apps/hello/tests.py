@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 import datetime
 from django.core import management
 from django.test import TestCase
@@ -113,13 +113,13 @@ class BioViewsTests(CleanTestCase):
         :return:
         """
         client = Client()
-        self.create_my_bio_test_data(first_name='Алексей',
-                                     last_name='Алединов')
+        self.create_my_bio_test_data(first_name=u'Алексей',
+                                     last_name=u'Алединов')
         response = client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "42 Coffee Cups Test Assignment")
         self.assertEqual(response.context['object'].last_name,
-                         'Алединов')
+                         u'Алединов')
 
     def test_without_entity_in_DB(self):
         """
