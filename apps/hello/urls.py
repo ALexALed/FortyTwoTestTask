@@ -5,4 +5,3 @@ from .views import MyBioView
 urlpatterns = [
     url(r'^$', MyBioView.as_view(), name='home'),
 ]
-
