@@ -1,10 +1,20 @@
 import datetime
+from django.core import management
 from django.test import TestCase
 from django.test.client import Client
 from hello.models import MyBio
 
 
-class BioModelTests(TestCase):
+class CleanTestCase(TestCase):
+    def setUp(self):
+        """
+        Avoid load initial fixtures
+        :return:
+        """
+        management.call_command('flush', load_initial_data=False, verbosity=0, interactive=False)
+
+
+class BioModelTests(CleanTestCase):
 
     def create_my_bio_test_data(self):
         """
@@ -61,14 +71,15 @@ class BioModelTests(TestCase):
         self.assertEqual(MyBio.objects.count(), 0)
 
 
-class BioViewsTests(TestCase):
-    def create_my_bio_test_data(self):
+class BioViewsTests(CleanTestCase):
+
+    def create_my_bio_test_data(self, first_name='Oleksii', last_name='Aledinov'):
         """
         Method for creating test data
         :return:
         """
-        return MyBio.objects.create(first_name='Oleksii',
-                                    last_name='Aledinov',
+        return MyBio.objects.create(first_name=first_name,
+                                    last_name=last_name,
                                     birth_date=datetime.date.today(),
                                     biography='Info about me',
                                     email='alexaled@gmail.com',
@@ -77,6 +88,10 @@ class BioViewsTests(TestCase):
                                     other_contacts='0968962750')
 
     def test_index_view(self):
+        """
+        Bio view test
+        :return:
+        """
         client = Client()
         response = client.get('/')
         self.assertEqual(response.status_code, 404)
@@ -85,3 +100,35 @@ class BioViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "42 Coffee Cups Test Assignment")
         self.assertEqual(response.context['object'].last_name, 'Aledinov')
+
+    def test_index_view_cyrillic(self):
+        """
+        Cyrillic bio view test
+        :return:
+        """
+        client = Client()
+        self.create_my_bio_test_data(first_name='Алексей', last_name='Алединов')
+        response = client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "42 Coffee Cups Test Assignment")
+        self.assertEqual(response.context['object'].last_name, 'Алединов')
+
+    def test_without_entity_in_DB(self):
+        """
+        DB is empty test
+        :return:
+        """
+        client = Client()
+        response = client.get('/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_two_entities_in_DB(self):
+        """
+        Two entities stored in DB
+        :return:
+        """
+        self.create_my_bio_test_data()
+        self.create_my_bio_test_data()
+        client = Client()
+        response = client.get('/')
+        self.assertEqual(response.status_code, 404)
