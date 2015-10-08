@@ -11,7 +11,10 @@ class CleanTestCase(TestCase):
         Avoid load initial fixtures
         :return:
         """
-        management.call_command('flush', load_initial_data=False, verbosity=0, interactive=False)
+        management.call_command('flush',
+                                load_initial_data=False,
+                                verbosity=0,
+                                interactive=False)
 
 
 class BioModelTests(CleanTestCase):
@@ -73,7 +76,9 @@ class BioModelTests(CleanTestCase):
 
 class BioViewsTests(CleanTestCase):
 
-    def create_my_bio_test_data(self, first_name='Oleksii', last_name='Aledinov'):
+    def create_my_bio_test_data(self,
+                                first_name='Oleksii',
+                                last_name='Aledinov'):
         """
         Method for creating test data
         :return:
@@ -107,11 +112,13 @@ class BioViewsTests(CleanTestCase):
         :return:
         """
         client = Client()
-        self.create_my_bio_test_data(first_name='Алексей', last_name='Алединов')
+        self.create_my_bio_test_data(first_name='Алексей',
+                                     last_name='Алединов')
         response = client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "42 Coffee Cups Test Assignment")
-        self.assertEqual(response.context['object'].last_name, 'Алединов')
+        self.assertEqual(response.context['object'].last_name,
+                         'Алединов')
 
     def test_without_entity_in_DB(self):
         """
