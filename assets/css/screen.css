@@ -1,3 +1,6 @@
+.bold-font{
+    font-weight: bold;
+}
  .wrap
 {
     white-space: pre-wrap; /* css-3 */

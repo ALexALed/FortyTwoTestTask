@@ -1,0 +1,83 @@
+import datetime
+import json
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+from django.test.client import Client
+
+from .models import RequestData
+
+
+class RequestsModelTests(TestCase):
+
+    def create_request_data(self):
+        """
+        Method for creating test data
+        :return:
+        """
+        return RequestData.objects.create(http_request='/home/',
+                                          remote_addr='127.0.0.1',
+                                          date_time=datetime.datetime.now(),
+                                          viewed=False)
+
+    def test_requests_model_create_and_str(self):
+        """
+        check object string representation
+        :return:
+        """
+        request_data = self.create_request_data()
+        self.assertEqual(str(request_data), 'Request /home/ from 127.0.0.1')
+
+    def test_requests_update(self):
+        """
+        checked model to updating
+        :return:
+        """
+        request_data = self.create_request_data()
+        self.assertEqual(RequestData.objects.filter(viewed=True).count(), 0)
+        request_data.viewed = True
+        request_data.save()
+        self.assertEqual(RequestData.objects.filter(viewed=True).count(), 1)
+
+    def test_delete(self):
+        """
+        checked model to deleting object
+        :return:
+        """
+        request_data = self.create_request_data()
+        self.assertEqual(RequestData.objects.all().count(), 1)
+        request_data.delete()
+        self.assertEqual(RequestData.objects.all().count(), 0)
+
+
+class RequestsViewsMiddlewareTests(TestCase):
+
+    def test_requests_middleware(self):
+        client = Client()
+        client.get('/')
+        response = client.get(reverse('requests'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(RequestData.objects.count(), 0)
+
+    def test_requests_index_page_context(self):
+        client = Client()
+        client.get('/')
+        response = client.get(reverse('requests'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.context['object_list'].count(), 0)
+
+    def test_requests_index_json_data(self):
+        client = Client()
+        client.get('/')
+        response = client.get(reverse('requests_data'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'requestsNew')
+
+    def test_post_request_viewed(self):
+        client = Client()
+        client.get('/')
+        client.post(
+            '/requests/requestsData/',
+            {'data': json.dumps([{'request_id': 1}])},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        self.assertEqual(RequestData.objects.filter(viewed=True).count(), 1)
