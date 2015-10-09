@@ -1,6 +1,9 @@
 import datetime
+import json
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
+
 from .models import RequestData
 
 
@@ -51,8 +54,30 @@ class RequestsViewsMiddlewareTests(TestCase):
     def test_requests_middleware(self):
         client = Client()
         client.get('/')
-        self.assertEqual(RequestData.objects.count(), 1)
-        response = client.get('/')
+        response = client.get(reverse('requests'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "42 Coffee Cups Test Assignment")
-        self.assertEqual(response.context['object'].last_name, 'Aledinov')
+        self.assertNotEqual(RequestData.objects.count(), 0)
+
+    def test_requests_index_page_context(self):
+        client = Client()
+        client.get('/')
+        response = client.get(reverse('requests'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.context['object_list'].count(), 0)
+
+    def test_requests_index_json_data(self):
+        client = Client()
+        client.get('/')
+        response = client.get(reverse('requests_data'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'requestsNew')
+
+    def test_post_request_viewed(self):
+        client = Client()
+        client.get('/')
+        client.post(
+            '/requests/requestsData/',
+            {'data': json.dumps([{'request_id': 1}])},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        self.assertEqual(RequestData.objects.filter(viewed=True).count(), 1)
