@@ -21,7 +21,7 @@ class RequestsModelTests(TestCase):
 
     def test_requests_model_create_and_str(self):
         """
-        check object string representation
+        Checked object string representation
         :return:
         """
         request_data = self.create_request_data()
@@ -29,7 +29,7 @@ class RequestsModelTests(TestCase):
 
     def test_requests_update(self):
         """
-        checked model to updating
+        Checked model to updating
         :return:
         """
         request_data = self.create_request_data()
@@ -40,7 +40,7 @@ class RequestsModelTests(TestCase):
 
     def test_delete(self):
         """
-        checked model to deleting object
+        Checked model to deleting object
         :return:
         """
         request_data = self.create_request_data()
@@ -52,6 +52,10 @@ class RequestsModelTests(TestCase):
 class RequestsViewsMiddlewareTests(TestCase):
 
     def test_requests_middleware(self):
+        """
+        Checked requests middleware, make request and check it in the table
+        :return:
+        """
         client = Client()
         client.get('/')
         response = client.get(reverse('requests'))
@@ -59,6 +63,10 @@ class RequestsViewsMiddlewareTests(TestCase):
         self.assertNotEqual(RequestData.objects.count(), 0)
 
     def test_requests_index_page_context(self):
+        """
+        Checked requests index page context
+        :return:
+        """
         client = Client()
         client.get('/')
         response = client.get(reverse('requests'))
@@ -66,6 +74,10 @@ class RequestsViewsMiddlewareTests(TestCase):
         self.assertNotEqual(response.context['object_list'].count(), 0)
 
     def test_requests_index_json_data(self):
+        """
+        checked request context in index page
+        :return:
+        """
         client = Client()
         client.get('/')
         response = client.get(reverse('requests_data'))
@@ -73,6 +85,10 @@ class RequestsViewsMiddlewareTests(TestCase):
         self.assertContains(response, 'requestsNew')
 
     def test_post_request_viewed(self):
+        """
+        checked post requests data
+        :return:
+        """
         client = Client()
         client.get('/')
         client.post(

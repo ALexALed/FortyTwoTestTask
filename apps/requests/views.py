@@ -46,3 +46,5 @@ class RequestsData(View):
             else:
                 return HttpResponse(json.dumps({'success': True}),
                                     content_type="application/json")
+        return HttpResponse(json.dumps({'success': False}),
+                            content_type="application/json")
