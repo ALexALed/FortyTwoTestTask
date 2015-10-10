@@ -123,13 +123,12 @@ class BioViewsTests(CleanTestCase):
         :return:
         """
         client = Client()
-        self.create_my_bio_test_data(first_name=u'Алексей',
-                                     last_name=u'Алединов')
+        bio_object = self.create_my_bio_test_data(first_name=u'Алексей',
+                                                  last_name=u'Алединов')
         response = client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "42 Coffee Cups Test Assignment")
-        self.assertEqual(response.context['object'].last_name,
-                         u'Алединов')
+        self.assertContains(response, bio_object.last_name)
+        self.assertEqual(response.context['object'], bio_object)
 
     def test_without_entity_in_DB(self):
         """
@@ -145,8 +144,9 @@ class BioViewsTests(CleanTestCase):
         Two entities stored in DB
         :return:
         """
-        self.create_my_bio_test_data()
+        first_bio_object = self.create_my_bio_test_data()
         self.create_my_bio_test_data()
         client = Client()
         response = client.get('/')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object'], first_bio_object)
