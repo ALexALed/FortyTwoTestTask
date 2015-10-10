@@ -114,11 +114,13 @@ class RequestsViewsMiddlewareTests(TestCase):
         requests_from_context = [datetime.time(request.date_time.hour,
                                                request.date_time.minute,
                                                request.date_time.second)
-                                 for request in response.context['object_list']]
+                                 for request in
+                                 response.context['object_list']]
         requests_from_db = [datetime.time(request.date_time.hour,
                                           request.date_time.minute,
                                           request.date_time.second)
-                            for request in RequestData.objects.all().order_by('-date_time')[0:10]]
+                            for request in RequestData.objects.all().
+                                               order_by('-date_time')[0:10]]
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(requests_from_context), 10)
         self.assertEqual(requests_from_db, requests_from_context)
