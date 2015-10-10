@@ -101,7 +101,7 @@ class RequestsViewsMiddlewareTests(TestCase):
 
     def test_last_ten_requests(self):
         """
-        Checked requests middleware, make request and check it in the table
+        Checked requests middleware, last 10 commits
         :return:
         """
         client = Client()
