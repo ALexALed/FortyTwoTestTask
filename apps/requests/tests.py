@@ -1,3 +1,4 @@
+import time
 import datetime
 import json
 from django.core.urlresolvers import reverse
@@ -97,3 +98,27 @@ class RequestsViewsMiddlewareTests(TestCase):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
         )
         self.assertEqual(RequestData.objects.filter(viewed=True).count(), 1)
+
+    def test_last_ten_requests(self):
+        """
+        Checked requests middleware, make request and check it in the table
+        :return:
+        """
+        client = Client()
+        requests_list = []
+        for i in range(0, 15):
+            time.sleep(1)
+            client.get('/')
+            requests_list.append({'time': datetime.datetime.now()})
+        response = client.get(reverse('requests'))
+        requests_from_context = [datetime.time(request.date_time.hour,
+                                               request.date_time.minute,
+                                               request.date_time.second)
+                                 for request in response.context['object_list']]
+        requests_from_db = [datetime.time(request.date_time.hour,
+                                          request.date_time.minute,
+                                          request.date_time.second)
+                            for request in RequestData.objects.all().order_by('-date_time')[0:10]]
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(requests_from_context), 10)
+        self.assertEqual(requests_from_db, requests_from_context)
