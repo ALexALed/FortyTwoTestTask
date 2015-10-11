@@ -1,11 +1,9 @@
 # encoding: utf-8
 import datetime
-from django.contrib.auth.models import User
 from django.core import management
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.client import Client
-from .models import MyBio
+from hello.models import MyBio
 
 
 class CleanTestCase(TestCase):
@@ -111,11 +109,10 @@ class BioViewsTests(CleanTestCase):
         Bio view test
         :return:
         """
-        client = Client()
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 404)
         self.create_my_bio_test_data()
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "42 Coffee Cups Test Assignment")
         self.assertEqual(response.context['object'].last_name, 'Aledinov')
@@ -125,10 +122,9 @@ class BioViewsTests(CleanTestCase):
         Cyrillic bio view test
         :return:
         """
-        client = Client()
         bio_object = self.create_my_bio_test_data(first_name=u'Алексей',
                                                   last_name=u'Алединов')
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, bio_object.last_name)
         self.assertEqual(response.context['object'], bio_object)
@@ -138,8 +134,7 @@ class BioViewsTests(CleanTestCase):
         DB is empty test
         :return:
         """
-        client = Client()
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 404)
 
     def test_two_entities_in_DB(self):
@@ -149,8 +144,7 @@ class BioViewsTests(CleanTestCase):
         """
         first_bio_object = self.create_my_bio_test_data()
         self.create_my_bio_test_data()
-        client = Client()
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['object'], first_bio_object)
 
