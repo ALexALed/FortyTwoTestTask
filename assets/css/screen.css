@@ -1,11 +1,36 @@
 .bold-font{
     font-weight: bold;
 }
- .wrap
-{
+
+.vertical-align {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.user-name {
+    padding-top: 15px;
+}
+
+ .wrap {
     white-space: pre-wrap; /* css-3 */
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: -pre-wrap; /* Opera 4-6 */
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word;
 }
+
+ .errorlist {
+     list-style: none;
+ }
+
+ .errorlist li {
+     color: red;
+     font-weight: bold;
+ }
+
+ .inline-group select{
+     display: inline-block;
+     width: 33%;
+
+ }

@@ -1,31 +1,46 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>{% block title %}{% endblock title %}Site Name</title>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock title %}Site Name</title>
 
-        <meta http-equiv="X-UA-Compatible" content="chrome=IE7" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=IE7"/>
 
-        <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{% static 'css/screen.css' %}" media="screen, projection"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/screen.css' %}" media="screen, projection"/>
 
-        {% block extra_head %}{% endblock extra_head %}
+    {% block extra_head %}{% endblock extra_head %}
 
-    </head>
-    <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
-        <div class="container">
-            {% block content %}{% endblock content %}
+</head>
+<body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not user.is_authenticated %}
+                    <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
+                    {% else %}
+                    <li class="user-name">{{ user }}</li>
+                    <li><a href="{% url 'django.contrib.auth.views.logout' %}?next=/">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-    </body>
-    {% block javascript %}
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="{% static 'js/underscore-min.js'%}"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="{% static 'js/script.js'%}"></script>
-    {% endblock %}
+    </nav>
+    {% block content %}{% endblock content %}
+</div>
+</body>
+{% block javascript %}
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="{% static 'js/jquery.form.min.js' %}"></script>
+    <script src="{% static 'js/underscore-min.js' %}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
 </html>

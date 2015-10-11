@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-9 vertical-align">
+            <h1>42 Coffee Cups Test Assignment</h1>
+        </div>
+    </div>
+
+    <form id="updateForm" class="form-vertical" action="{% url 'update' object.id %}" method="post">{% csrf_token %}
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </div>
+                <label>{{ form.birth_date.label }}</label>
+
+                <div class="form-group inline-group">
+                    {{ form.birth_date }}
+                </div>
+                {{ form.birth_date.errors }}
+
+                <div class="form-group">
+                    {% if object.photo %}
+                        <img class="image" height="200" width="200" src="{{ object.photo.url }}">
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.photo.label }}</label>
+                    {{ form.photo }}
+                    {{ form.photo.errors }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.jabber.label }}</label>
+                    {{ form.jabber }}
+                    {{ form.jabber.errors }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.skype.label }}</label>
+                    {{ form.skype }}
+                    {{ form.skype.errors }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.other_contacts.label }}</label>
+                    {{ form.other_contacts }}
+                    {{ form.other_contacts.errors }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.biography.label }}</label>
+                    {{ form.biography }}
+                    {{ form.biography.errors }}
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="alert" id="submitStatus"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+            <input class="btn btn-default" type="submit" value="Submit">
+            </div>
+            <div class="col-sm-1">
+
+            <a class='btn' href="{% url 'home' %}">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <a href="{% url 'requests' %}">requests</a>
+
+{% endblock %}

@@ -3,7 +3,9 @@
 {% block content %}
 
     <div class="row">
-        <h1>42 Coffee Cups Test Assignment</h1>
+        <div class="col-sm-9 vertical-align">
+            <h1>42 Coffee Cups Test Assignment</h1>
+        </div>
     </div>
 
     <div class="row">
@@ -26,7 +28,7 @@
             </ul>
         </div>
     </div>
-
+    <a id="update" href="{{ object.get_update_url }}">update</a>
     <a href="{% url 'requests' %}">requests</a>
 
 {% endblock %}

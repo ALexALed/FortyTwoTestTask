@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    function getCookie(name) {
+        function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
         var cookies = document.cookie.split(';');
@@ -25,10 +25,10 @@ $(document).ready(function () {
         }
     });
 
-    // page requests
+    // requests page
     if ($("#requestsContainer").length) {
 
-        function sendViews(requests) {
+         function sendViews(requests) {
             $.ajax({
                 method: "post",
                 url: "/requests/requestsData/",
@@ -70,6 +70,70 @@ $(document).ready(function () {
 
         fillRequests();
         setInterval(fillRequests, 10000); //10 sec delay
-
     }
+
+    //update page
+     if ($("#updateForm").length) {
+
+         function managestatusVisible(show){
+            var status = $('#submitStatus');
+            if(show){
+               status.show();
+            }else{
+                status.hide();
+            }
+         }
+
+         function manageFormStatus(success){
+             var status = $('#submitStatus');
+             if (success){
+                managestatusVisible(true);
+                status.addClass('alert-success');
+                status.text('Data saved done!');
+
+            }else{
+                managestatusVisible(true);
+                status.addClass('alert-danger');
+                status.text('Error saving data!');
+             }
+
+         }
+
+         function formElementsEnableDisable(enable){
+             if (enable){
+                $("#updateForm :input").prop('disabled', false);
+             }else{
+                $("#updateForm :input").prop('disabled', true);
+             }
+         }
+
+
+        managestatusVisible(false);
+
+
+         function showSuccess(responseText, statusText, xhr, $form) {
+             manageFormStatus(true);
+             formElementsEnableDisable(true);
+
+         }
+
+         function showErrors(responseText, statusText, xhr, $form) {
+             manageFormStatus(false);
+             formElementsEnableDisable(true);
+         }
+
+         var options = {
+             target: '#submitStatus',
+             success: showSuccess,
+             error: showErrors,
+         };
+
+
+         $('#updateForm').submit(function () {
+             $(this).ajaxSubmit(options);
+             formElementsEnableDisable(false);
+             return false;
+         });
+     }
+
 });
