@@ -1,9 +1,10 @@
 # encoding: utf-8
 import datetime
+from django.contrib.auth.models import User
 from django.core import management
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from hello.models import MyBio
+from .models import MyBio
 
 
 class CleanTestCase(TestCase):
@@ -158,4 +159,3 @@ class BioViewsTests(CleanTestCase):
         response = self.client.get(reverse('update', args=(bio_object.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['object'], bio_object)
-

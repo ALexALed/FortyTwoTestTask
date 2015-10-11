@@ -17,7 +17,6 @@ class HelloIntegrationTests(LiveServerTestCase):
         cls.selenium.quit()
         super(HelloIntegrationTests, cls).tearDownClass()
 
-
     def create_my_bio_test_data(self):
         """
         Method for creating test data
@@ -33,6 +32,10 @@ class HelloIntegrationTests(LiveServerTestCase):
                                     other_contacts='0968962750')
 
     def test_bio_update(self):
+        """
+        Check interactive login, index, update
+        :return:
+        """
         self.create_my_bio_test_data()
         self.selenium.get('%s%s' % (self.live_server_url, reverse('login')))
         self.selenium.find_element_by_id('id_username').send_keys('admin')
@@ -41,13 +44,11 @@ class HelloIntegrationTests(LiveServerTestCase):
         result.click()
         result = self.selenium.find_element_by_id('update')
         result.click()
-        self.selenium.get('%s%s' % (self.live_server_url, reverse('update', args=(1,))))
+        self.selenium.get('%s%s' % (self.live_server_url, reverse('update',
+                                                                  args=(1,))))
         name_field = self.selenium.find_element_by_id('id_first_name')
         name_field.clear()
         name_field.send_keys('Aled')
         self.selenium.find_element_by_id('updateForm').submit()
         bio_object = MyBio.objects.first()
         self.assertEqual(bio_object.first_name, u'Aled')
-
-
-

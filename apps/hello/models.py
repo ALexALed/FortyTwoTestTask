@@ -11,7 +11,8 @@ class MyBio(models.Model):
     skype = models.CharField("Skype", max_length=200, blank=True, null=True)
     jabber = models.EmailField("Jabber", blank=True, null=True)
     other_contacts = models.TextField("Other contacts", blank=True, null=True)
-    photo = models.ImageField("Photo", upload_to='hello/photos/', blank=True, null=True)
+    photo = models.ImageField("Photo", upload_to='hello/photos/',
+                              blank=True, null=True)
 
     def get_update_url(self):
         from django.core.urlresolvers import reverse
@@ -21,7 +22,7 @@ class MyBio(models.Model):
         return "Bio data for {0} {1}".format(self.first_name, self.last_name)
 
     def save(self, force_insert=False, force_update=False,
-               using=None, update_fields=None):
+             using=None, update_fields=None):
         super(MyBio, self).save(force_insert, force_update,
                                 using, update_fields)
         if self.photo:
