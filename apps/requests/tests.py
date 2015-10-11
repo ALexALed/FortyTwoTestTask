@@ -3,7 +3,6 @@ import datetime
 import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.client import Client
 
 from .models import RequestData
 
@@ -57,9 +56,8 @@ class RequestsViewsMiddlewareTests(TestCase):
         Checked requests middleware, make request and check it in the table
         :return:
         """
-        client = Client()
-        client.get('/')
-        response = client.get(reverse('requests'))
+        self.client.get('/')
+        response = self.client.get(reverse('requests'))
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(RequestData.objects.count(), 0)
 
@@ -68,9 +66,8 @@ class RequestsViewsMiddlewareTests(TestCase):
         Checked requests index page context
         :return:
         """
-        client = Client()
-        client.get('/')
-        response = client.get(reverse('requests'))
+        self.client.get('/')
+        response = self.client.get(reverse('requests'))
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.context['object_list'].count(), 0)
 
@@ -79,9 +76,8 @@ class RequestsViewsMiddlewareTests(TestCase):
         checked request context in index page
         :return:
         """
-        client = Client()
-        client.get('/')
-        response = client.get(reverse('requests_data'))
+        self.client.get('/')
+        response = self.client.get(reverse('requests_data'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'requestsNew')
 
@@ -90,9 +86,8 @@ class RequestsViewsMiddlewareTests(TestCase):
         checked post requests data
         :return:
         """
-        client = Client()
-        client.get('/')
-        client.post(
+        self.client.get('/')
+        self.client.post(
             '/requests/requestsData/',
             {'data': json.dumps([{'request_id': 1}])},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -104,13 +99,12 @@ class RequestsViewsMiddlewareTests(TestCase):
         Checked requests middleware, last 10 commits
         :return:
         """
-        client = Client()
         requests_list = []
         for i in range(0, 15):
             time.sleep(1)
-            client.get('/')
+            self.client.get('/')
             requests_list.append({'time': datetime.datetime.now()})
-        response = client.get(reverse('requests'))
+        response = self.client.get(reverse('requests'))
         requests_from_context = [datetime.time(request.date_time.hour,
                                                request.date_time.minute,
                                                request.date_time.second)
