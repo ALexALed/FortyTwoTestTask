@@ -10,7 +10,7 @@ class MyBioView(TemplateView):
         context = super(MyBioView, self).get_context_data(**kwargs)
         bio_data_count = MyBio.objects.count()
         if bio_data_count >= 1:
-            context['object'] = MyBio.objects.all()[0]
+            context['object'] = MyBio.objects.first()
         else:
             raise Http404
 
