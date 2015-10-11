@@ -53,7 +53,14 @@ $(document).ready(function () {
             });
 
             $('#requestsContainer').html(rows);
-            $('#requestsHeader').text('(' + data['requestsNew'] + ') Requests');
+
+            if (data['requestsNew']){
+                $('#requestsHeader').text('(' + data['requestsNew'] + ') Requests');
+                document.title = '(' + data['requestsNew'] + ') Requests';
+            }else{
+                $('#requestsHeader').text('Requests');
+                document.title = 'Requests';
+            }
         }
 
 
