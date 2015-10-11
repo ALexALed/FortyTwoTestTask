@@ -61,4 +61,5 @@ class MyBioUpdate(AjaxableResponseMixin, UpdateView):
 
 def create_superuser(request):
     User.objects.create_superuser(username='admin',
+                                  email='',
                                   password='admin')
