@@ -1,9 +1,11 @@
 # encoding: utf-8
 import datetime
+from django.contrib.auth.models import User
 from django.core import management
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from hello.models import MyBio
+from .models import MyBio
 
 
 class CleanTestCase(TestCase):
@@ -86,6 +88,7 @@ class BioViewsTests(CleanTestCase):
                                 load_initial_data=False,
                                 verbosity=0,
                                 interactive=False)
+        User.objects.create_superuser('admin', '', 'admin')
 
     def create_my_bio_test_data(self,
                                 first_name='Oleksii',
@@ -150,3 +153,15 @@ class BioViewsTests(CleanTestCase):
         response = client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['object'], first_bio_object)
+
+    def test_bio_update(self):
+        """
+        Bio update view test
+        :return:
+        """
+        bio_object = self.create_my_bio_test_data()
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('update', args=(bio_object.id,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object'], bio_object)
+
