@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    {% if requests_new %}
+        ({{ requests_new }}) Requests
+    {% else %}
+        Requests
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     {% csrf_token %}
     <div class="row">
