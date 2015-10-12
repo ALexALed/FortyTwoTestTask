@@ -57,9 +57,3 @@ class MyBioUpdate(AjaxableResponseMixin, UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(MyBioUpdate, self).dispatch(*args, **kwargs)
-
-
-def create_superuser(request):
-    User.objects.create_superuser(username='admin',
-                                  email='',
-                                  password='admin')
