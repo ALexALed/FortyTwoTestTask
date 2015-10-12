@@ -45,6 +45,8 @@ class RequestsData(View):
         if request.is_ajax():
             data = json.loads(request.POST['data'])
             for request_data in data:
+                if request.viewed:
+                    continue
                 request_object = \
                     RequestData.objects.get(pk=request_data['request_id'])
                 request_object.viewed = True
