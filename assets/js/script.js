@@ -40,6 +40,7 @@ $(document).ready(function () {
             var compiledRow = _.template("<tr class=<%=bold_class%>><td><%=http_request%></td>" +
                 "<td><%=remote_addr%></td>" +
                 "<td><%=date_time%></td> " +
+                "<td><%=priority%></td> " +
                 "</tr>");
             var rows = '';
             data['requestsData'].forEach(function (item) {
@@ -47,7 +48,8 @@ $(document).ready(function () {
                     http_request: item['http_request'],
                     remote_addr: item['remote_addr'],
                     date_time: item['date_time'],
-                    bold_class: item['viewed'] == false ? 'bold-font' : ''
+                    bold_class: item['viewed'] == false ? 'bold-font' : '',
+                    priority: item['priority'],
                 });
                 rows += row;
             });

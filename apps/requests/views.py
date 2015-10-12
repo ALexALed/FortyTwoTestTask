@@ -9,7 +9,9 @@ from .models import RequestData
 class RequestsView(View):
 
     def get(self, request, *args, **kwargs):
-        requests_data = RequestData.objects.all().order_by('-date_time')[0:10]
+        requests_data = \
+            RequestData.objects.all().order_by(
+                '-priority', '-date_time')[0:10]
         new_requests_count = len([new_request for new_request in requests_data
                                   if not new_request.viewed])
         return render_to_response('requests/index.html',
@@ -21,7 +23,9 @@ class RequestsView(View):
 class RequestsData(View):
 
     def get(self, request):
-        requests_data = RequestData.objects.all().order_by('-date_time')[0:10]
+        requests_data = \
+            RequestData.objects.all().order_by(
+                '-priority', '-date_time')[0:10]
         new_requests_count = len([new_request for new_request in requests_data
                                   if not new_request.viewed])
 
@@ -30,7 +34,9 @@ class RequestsData(View):
                              'date_time':
                                  req.date_time.strftime('%Y-%m-%d %H:%M'),
                              'viewed': req.viewed,
-                             'request_id': req.id} for req in requests_data]
+                             'request_id': req.id,
+                             'priority': req.priority}
+                            for req in requests_data]
         return HttpResponse(json.dumps({'requestsData': requests_to_json,
                                         'requestsNew': new_requests_count}),
                             content_type="application/json")
