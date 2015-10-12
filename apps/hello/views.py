@@ -1,6 +1,5 @@
 import json
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import Http404, HttpResponse
