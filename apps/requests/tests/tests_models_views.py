@@ -4,7 +4,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from .models import RequestData
+from apps.requests.models import RequestData
 
 
 class RequestsModelTests(TestCase):
@@ -49,17 +49,7 @@ class RequestsModelTests(TestCase):
         self.assertEqual(RequestData.objects.all().count(), 0)
 
 
-class RequestsViewsMiddlewareTests(TestCase):
-
-    def test_requests_middleware(self):
-        """
-        Checked requests middleware, make request and check it in the table
-        :return:
-        """
-        self.client.get('/')
-        response = self.client.get(reverse('requests'))
-        self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(RequestData.objects.count(), 0)
+class RequestsViewsTests(TestCase):
 
     def test_requests_index_page_context(self):
         """
@@ -73,7 +63,7 @@ class RequestsViewsMiddlewareTests(TestCase):
 
     def test_requests_index_json_data(self):
         """
-        checked request context in index page
+        Checked request context in index page
         :return:
         """
         self.client.get('/')
@@ -83,13 +73,14 @@ class RequestsViewsMiddlewareTests(TestCase):
 
     def test_post_request_viewed(self):
         """
-        checked post requests data
+        Checked post requests data
         :return:
         """
         self.client.get('/')
         self.client.post(
             '/requests/requestsData/',
-            {'data': json.dumps([{'request_id': 1}])},
+            {'data': json.dumps([{'request_id': 1, 'viewed': False},
+                                 {'request_id': 2, 'viewed': True}])},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
         )
         self.assertEqual(RequestData.objects.filter(viewed=True).count(), 1)
@@ -118,3 +109,18 @@ class RequestsViewsMiddlewareTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(requests_from_context), 10)
         self.assertEqual(requests_from_db, requests_from_context)
+
+    def test_post_request_viewed_not_ajax(self):
+        """
+        Checked post requests data not ajax
+        :return:
+        """
+        self.client.get('/')
+        response = self.client.post('/requests/requestsData/',
+                                    {'data': json.dumps([{'request_id': 1,
+                                                          'viewed': False},
+                                                         {'request_id': 2,
+                                                          'viewed': True}])}
+                                    )
+        response_dict = json.loads(response.content)
+        self.assertEqual(response_dict['success'], False)
