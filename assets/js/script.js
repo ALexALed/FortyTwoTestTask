@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-        function getCookie(name) {
+    function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
         var cookies = document.cookie.split(';');
@@ -25,10 +25,10 @@ $(document).ready(function () {
         }
     });
 
-    // requests page
+    // page requests
     if ($("#requestsContainer").length) {
 
-         function sendViews(requests) {
+        function sendViews(requests) {
             $.ajax({
                 method: "post",
                 url: "/requests/requestsData/",
@@ -65,7 +65,7 @@ $(document).ready(function () {
             }
         }
 
-
+        var requests = [];
         function fillRequests() {
 
             $.ajax({
@@ -73,12 +73,29 @@ $(document).ready(function () {
                 url: "/requests/requestsData"
             }).done(function (data) {
                 fillData(data);
-                sendViews(data['requestsData']);
+                requests = data['requestsData'];
+                if (wasRequestsViewed()) {
+                    sendViews(requests);
+                }
+                requestsViewed = false;
+
             });
         }
 
+        var requestsViewed = false;
+
+        function wasRequestsViewed(){
+            return requestsViewed || (document.visibilityState=='visible');
+        }
+
+        $(window).focus(function() {
+            requestsViewed = true;
+            fillRequests();
+        });
+
         fillRequests();
-        setInterval(fillRequests, 10000); //10 sec delay
+        setInterval(fillRequests, 5000); //5 sec delay
+
     }
 
     //update page

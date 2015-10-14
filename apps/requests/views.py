@@ -45,12 +45,13 @@ class RequestsData(View):
         if request.is_ajax():
             data = json.loads(request.POST['data'])
             for request_data in data:
-                if request.viewed:
+                if request_data['viewed']:
                     continue
-                request_object = \
-                    RequestData.objects.get(pk=request_data['request_id'])
-                request_object.viewed = True
-                request_object.save()
+                request_objects = \
+                    RequestData.objects.filter(pk=request_data['request_id'])
+                for request_object in request_objects:
+                    request_object.viewed = True
+                    request_object.save()
             else:
                 return HttpResponse(json.dumps({'success': True}),
                                     content_type="application/json")
