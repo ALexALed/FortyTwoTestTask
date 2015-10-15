@@ -37,7 +37,8 @@ $(document).ready(function () {
         }
 
         function fillData(data) {
-            var compiledRow = _.template("<tr class=<%=bold_class%>><td><%=http_request%></td>" +
+            var compiledRow = _.template(
+                "<tr class=<%=bold_class%>><td><%=http_request%></td>" +
                 "<td><%=remote_addr%></td>" +
                 "<td><%=date_time%></td> " +
                 "<td><%=priority%></td> " +

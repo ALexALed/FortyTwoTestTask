@@ -25,9 +25,7 @@ class AjaxableResponseMixin(object):
     def form_valid(self, form):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-            }
+            data = {'pk': self.object.pk}
             return self.render_to_json_response(data)
         else:
             return response
