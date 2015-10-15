@@ -37,6 +37,11 @@ class BioModelTests(CleanTestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(pre_save + 1,
                          DbSignals.objects.filter(signal='save').count())
+        object_logger = DbSignals.objects.filter(signal='save').last()
+        self.assertEqual(str(object_logger),
+                         '{0}-{1}-{2}'.format(object_logger.signal,
+                                              object_logger.model,
+                                              object_logger.date))
 
     def test_init_signal(self):
         """
