@@ -45,7 +45,7 @@ class BioModelTests(CleanTestCase):
         bio = self.create_my_bio_test_data()
         bio.first_name = 'JJ'
         bio.save()
-        bio_test = MyBio.objects.get(pk=1)
+        bio_test = MyBio.objects.last()
         self.assertEqual(str(bio_test), 'Bio data for JJ Aledinov')
 
     def test_delete(self):
@@ -56,6 +56,6 @@ class BioModelTests(CleanTestCase):
         self.assertEqual(MyBio.objects.count(), 0)
         self.create_my_bio_test_data()
         self.assertEqual(MyBio.objects.count(), 1)
-        bio = MyBio.objects.get(pk=1)
+        bio = MyBio.objects.last()
         bio.delete()
         self.assertEqual(MyBio.objects.count(), 0)
