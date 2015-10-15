@@ -1,4 +1,3 @@
-import time
 import datetime
 import json
 from django.core.urlresolvers import reverse
