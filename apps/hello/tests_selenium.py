@@ -2,7 +2,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
-from .models import MyBio
+from apps.hello.models import MyBio
 
 
 class HelloIntegrationTests(LiveServerTestCase):
