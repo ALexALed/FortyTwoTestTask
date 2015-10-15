@@ -1,13 +1,14 @@
 from django.db import models, connection
-from django.db.models.signals import post_init, post_save, post_delete
+from django.db.models.signals import pre_save, post_delete
 
 
-def signals_init(sender, **kwargs):
-    save_signal(sender, 'init')
-
-
-def signals_save(sender, **kwargs):
-    save_signal(sender, 'save')
+def signals_save_create(sender, **kwargs):
+    if not hasattr(kwargs['instance'], 'id'):
+        return
+    if kwargs['instance'].id:
+        save_signal(sender, 'save')
+    else:
+        save_signal(sender, 'create')
 
 
 def signals_delete(sender, **kwargs):
@@ -26,9 +27,7 @@ def save_signal(sender, signal):
 def db_table_exists(table_name):
     return table_name in connection.introspection.table_names()
 
-
-post_init.connect(signals_init, dispatch_uid='FortyTwoTestTask.logger')
-post_save.connect(signals_save, dispatch_uid='FortyTwoTestTask.logger')
+pre_save.connect(signals_save_create, dispatch_uid='FortyTwoTestTask.logger')
 post_delete.connect(signals_delete, dispatch_uid='FortyTwoTestTask.logger')
 
 
