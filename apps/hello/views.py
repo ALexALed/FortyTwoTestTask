@@ -1,6 +1,5 @@
 import json
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import Http404, HttpResponse
@@ -26,9 +25,7 @@ class AjaxableResponseMixin(object):
     def form_valid(self, form):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-            }
+            data = {'pk': self.object.pk}
             return self.render_to_json_response(data)
         else:
             return response
@@ -57,8 +54,3 @@ class MyBioUpdate(AjaxableResponseMixin, UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(MyBioUpdate, self).dispatch(*args, **kwargs)
-
-
-def create_superuser(request):
-    User.objects.create_superuser(username='admin',
-                                  password='admin')

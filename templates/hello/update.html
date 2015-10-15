@@ -86,3 +86,7 @@
     <a href="{% url 'requests' %}">requests</a>
 
 {% endblock %}
+
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}

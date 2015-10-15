@@ -26,7 +26,15 @@ class MyBio(models.Model):
         super(MyBio, self).save(force_insert, force_update,
                                 using, update_fields)
         if self.photo:
-            image = Image.open(self.photo)
-            size = (200, 200)
-            img = image.resize(size, Image.ANTIALIAS)
-            img.save(self.photo.path)
+            self.resize_photo((200, 200))
+
+    def resize_photo(self, size):
+        image = Image.open(self.photo.path)
+        image.thumbnail(size, Image.ANTIALIAS)
+        offset_x = max((size[0] - image.size[0]) / 2, 0)
+        offset_y = max((size[1] - image.size[1]) / 2, 0)
+        final_thumb = Image.new(mode='RGBA',
+                                size=size,
+                                color=(255, 255, 255, 0))
+        final_thumb.paste(image, (offset_x, offset_y))
+        final_thumb.save(self.photo.path, 'PNG')
