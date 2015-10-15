@@ -34,4 +34,3 @@ class TestEditLink(CleanTestCase):
                          rendered)
         response = self.client.get(rendered)
         self.assertEqual(response.status_code, 200)
-
