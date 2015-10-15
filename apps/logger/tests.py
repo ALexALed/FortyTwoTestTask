@@ -27,28 +27,21 @@ class BioModelTests(CleanTestCase):
                                         email='example@example.com',
                                         password='111111')
 
-    def test_save_signal(self):
+    def test_create_save_signal(self):
         """
-        checked model to creating object
+        checked model to creating and save object
         :return:
         """
-        pre_save = DbSignals.objects.filter(signal='save').count()
-        self.create_user_test_data()
+        pre_save = DbSignals.objects.filter(signal='create').count()
+        user = self.create_user_test_data()
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(pre_save + 1,
-                         DbSignals.objects.filter(signal='save').count())
+                         DbSignals.objects.filter(signal='create').count())
 
-    def test_init_signal(self):
-        """
-        checked model to init object
-        :return:
-        """
-        pre_count = DbSignals.objects.filter(signal='init').count()
-        User(username='Example',
-             email='example@example.com',
-             password='111111')
-        self.assertEqual(pre_count + 1,
-                         DbSignals.objects.filter(signal='init').count())
+        pre_save = DbSignals.objects.filter(signal='save').count()
+        user.save()
+        self.assertEqual(pre_save + 1,
+                         DbSignals.objects.filter(signal='save').count())
 
     def test_delete_signal(self):
         """
