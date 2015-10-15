@@ -1,7 +1,7 @@
 import datetime
 from django.template import Context, Template
 from ..models import MyBio
-from .tests_hello_models import CleanTestCase
+from .tests_hello import CleanTestCase
 
 
 class TestEditLink(CleanTestCase):
