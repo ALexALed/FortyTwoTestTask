@@ -51,12 +51,22 @@ class RequestsModelTests(TestCase):
 
 class RequestsViewsTests(TestCase):
 
+    def create_request_data(self, date_time=datetime.datetime.now()):
+        """
+        Method for creating test data
+        :return:
+        """
+        return RequestData.objects.create(http_request='/home/',
+                                          remote_addr='127.0.0.1',
+                                          date_time=date_time,
+                                          viewed=False)
+
     def test_requests_index_page_context(self):
         """
         Checked requests index page context
         :return:
         """
-        self.client.get('/')
+        self.create_request_data()
         response = self.client.get(reverse('requests'))
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.context['object_list'].count(), 0)
@@ -66,7 +76,7 @@ class RequestsViewsTests(TestCase):
         Checked request context in index page
         :return:
         """
-        self.client.get('/')
+        self.create_request_data()
         response = self.client.get(reverse('requests_data'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'requestsNew')
@@ -76,7 +86,7 @@ class RequestsViewsTests(TestCase):
         Checked post requests data
         :return:
         """
-        self.client.get('/')
+        self.create_request_data()
         self.client.post(
             '/requests/requestsData/',
             {'data': json.dumps([{'request_id': 1, 'viewed': False},
@@ -91,9 +101,10 @@ class RequestsViewsTests(TestCase):
         :return:
         """
         requests_list = []
+        now = datetime.datetime.now()
         for i in range(0, 15):
-            time.sleep(1)
-            self.client.get('/')
+            request_date_time = now + datetime.timedelta(0, 3)
+            self.create_request_data(date_time=request_date_time)
             requests_list.append({'time': datetime.datetime.now()})
         response = self.client.get(reverse('requests'))
         requests_from_context = [datetime.time(request.date_time.hour,
@@ -115,7 +126,7 @@ class RequestsViewsTests(TestCase):
         Checked post requests data not ajax
         :return:
         """
-        self.client.get('/')
+        self.create_request_data()
         response = self.client.post('/requests/requestsData/',
                                     {'data': json.dumps([{'request_id': 1,
                                                           'viewed': False},
