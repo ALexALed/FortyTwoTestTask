@@ -1,5 +1,4 @@
 import datetime
-from django.core import management
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
