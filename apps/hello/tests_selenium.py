@@ -1,4 +1,5 @@
 import datetime
+from django.core import management
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
@@ -36,7 +37,8 @@ class HelloIntegrationTests(LiveServerTestCase):
         Check interactive login, index, update
         :return:
         """
-        self.create_my_bio_test_data()
+        if MyBio.objects.count() == 0:
+            self.create_my_bio_test_data()
         self.selenium.get('%s%s' % (self.live_server_url, reverse('login')))
         self.selenium.find_element_by_id('id_username').send_keys('admin')
         self.selenium.find_element_by_id('id_password').send_keys('admin')
