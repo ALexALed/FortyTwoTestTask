@@ -115,24 +115,28 @@ class BioViewsTests(CleanTestCase):
         bio_object = self.create_my_bio_test_data()
         self.client.login(username='admin', password='admin')
 
+        fields_data = {'first_name': 'Ol',
+                        'last_name': 'Al',
+                        'birth_date': '1986-03-28',
+                        'photo': '',
+                        'email': 'alexaled@gmail.com',
+                        'jabber': 'alexaled1@khavr.com',
+                        'skype': 'alexaled',
+                        'other_contacts': 'alexaled@ukr.net',
+                        'biography': 'My bio'}
+
         resp = self.client.post(
             reverse('update', args=(bio_object.id,)),
-            {'first_name': 'Ol',
-             'last_name': 'Al',
-             'birth_date': '1986-03-28',
-             'photo': '',
-             'email': 'alexaled@gmail.com',
-             'jabber': 'alexaled1@khavr.com',
-             'skype': 'alexaled',
-             'other_contacts': 'alexaled@ukr.net',
-             'biography': 'My bio'},
+            fields_data,
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         self.assertEqual(resp.status_code, 200)
         content_resp = json.loads(resp.content)
         updated_bio = MyBio.objects.get(pk=bio_object.id)
         self.assertEqual(content_resp['pk'], updated_bio.id)
-        self.assertEqual(updated_bio.first_name, 'Ol')
+        for field in fields_data:
+            self.assertEqual(getattr(updated_bio, field),
+                             fields_data[field])
 
     def test_bio_update_data_form_invalid_ajax(self):
         """
@@ -168,21 +172,24 @@ class BioViewsTests(CleanTestCase):
         bio_object = self.create_my_bio_test_data()
         self.client.login(username='admin', password='admin')
 
+        fields_data = {'first_name': 'Ol',
+                       'last_name': 'Al',
+                       'birth_date': '1986-03-28',
+                       'photo': '',
+                       'email': 'alexaled@gmail.com',
+                       'jabber': 'alexaled1@khavr.com',
+                       'skype': 'alexaled',
+                       'other_contacts': 'alexaled@ukr.net',
+                       'biography': 'My bio'}
         resp = self.client.post(
             reverse('update', args=(bio_object.id,)),
-            {'first_name': 'Ol',
-             'last_name': 'Al',
-             'birth_date': '1986-03-28',
-             'photo': '',
-             'email': 'alexaled@gmail.com',
-             'jabber': 'alexaled1@khavr.com',
-             'skype': 'alexaled',
-             'other_contacts': 'alexaled@ukr.net',
-             'biography': 'My bio'},
+            fields_data,
         )
         self.assertEqual(resp.status_code, 302)
         updated_bio = MyBio.objects.get(pk=bio_object.id)
-        self.assertEqual(updated_bio.first_name, 'Ol')
+        for field in fields_data:
+            self.assertEqual(getattr(updated_bio, field),
+                             fields_data[field])
 
     def test_bio_update_data_form_invalid(self):
         """
@@ -217,28 +224,40 @@ class BioViewsTests(CleanTestCase):
         self.client.login(username='admin', password='admin')
 
         file_obj = StringIO()
-        image = Image.new("RGBA", size=(700, 700), color=(256, 0, 0))
+        size_example = (900, 700)
+        image = Image.new("RGBA", size=size_example, color=(256, 0, 0))
         image.save(file_obj, 'png')
         file_obj.name = 'test.png'
         file_obj.seek(0)
 
+        fields_data = {'first_name': 'Ol',
+                       'last_name': 'Al',
+                       'birth_date': datetime.date(1986, 3, 28),
+                       'photo': file_obj,
+                       'email': 'alexaled@gmail.com',
+                       'jabber': 'alexaled1@khavr.com',
+                       'skype': 'alexaled',
+                       'other_contacts': 'alexaled@ukr.net',
+                       'biography': 'My bio'}
+
         resp = self.client.post(
             reverse('update', args=(bio_object.id,)),
-            {'first_name': 'Ol',
-             'last_name': 'Al',
-             'birth_date': '1986-03-28',
-             'photo': file_obj,
-             'email': 'alexaled@gmail.com',
-             'jabber': 'alexaled1@khavr.com',
-             'skype': 'alexaled',
-             'other_contacts': 'alexaled@ukr.net',
-             'biography': 'My bio'},
+            fields_data,
         )
         self.assertEqual(resp.status_code, 302)
         updated_bio = MyBio.objects.get(pk=bio_object.id)
-        self.assertEqual(updated_bio.first_name, 'Ol')
-        self.assertEqual(updated_bio.photo.height, 200)
-        self.assertEqual(updated_bio.photo.width, 200)
+        for field in fields_data:
+            if field == 'photo':
+                continue
+            self.assertEqual(getattr(updated_bio, field),
+                             fields_data[field])
+
+        ratio = round(float(size_example[0]) / size_example[1], 2)
+        ratio_new = round(float(updated_bio.photo.width) /
+                          updated_bio.photo.height, 2)
+
+        # source image ratio will equal result image ratio
+        self.assertEqual(ratio, ratio_new)
         try:
             file_image = updated_bio.photo.path
             os.remove(file_image)

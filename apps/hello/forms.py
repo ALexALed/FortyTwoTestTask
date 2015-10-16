@@ -1,17 +1,9 @@
 from django import forms
 
-from models import MyBio
+from .models import MyBio
+from .widgets import CalendarWidget
 
 BOOTS_ATTRS = {'class': 'form-control'}
-DATE_FORMAT = "%m-%d-%y"
-
-
-class CalendarWidget(forms.TextInput):
-    class Media:
-        js = ('js/jquery-ui.min.js',
-              'js/datepicker.js')
-        css = {'all': ('css/jquery-ui.min.css',
-                       'css/theme.css')}
 
 
 class BioForm(forms.ModelForm):
@@ -20,7 +12,7 @@ class BioForm(forms.ModelForm):
     last_name = forms.CharField(
         widget=forms.widgets.TextInput(attrs=BOOTS_ATTRS))
     birth_date = forms.DateField(
-        widget=CalendarWidget(attrs=BOOTS_ATTRS))
+        widget=CalendarWidget(bootstrap=True))
     biography = forms.CharField(
         widget=forms.widgets.Textarea(attrs=BOOTS_ATTRS))
     skype = forms.CharField(
