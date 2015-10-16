@@ -10,7 +10,8 @@ class CalendarWidget(forms.DateInput):
             final_attrs = {'class': 'CalendarWidget'}
         if attrs is not None:
             final_attrs.update(attrs)
-        super(CalendarWidget, self).__init__(attrs=final_attrs, format='%m/%d/%Y')
+        super(CalendarWidget, self).__init__(attrs=final_attrs,
+                                             format='%m/%d/%Y')
 
     class Media:
         js = ('//code.jquery.com/jquery-1.11.3.min.js',

@@ -104,8 +104,8 @@ class RequestsViewsTests(TestCase):
         requests_list = []
         for i in range(0, 15):
             time.sleep(2)
-            request = self.create_request_data()
-            requests_list.append({'time': request.date_time})
+            request_data = self.create_request_data()
+            requests_list.append({'time': request_data.date_time})
         response = self.client.get(reverse('requests'))
         requests_from_context = [datetime.time(request.date_time.hour,
                                                request.date_time.minute,
@@ -144,8 +144,9 @@ class RequestsViewsTests(TestCase):
         requests_list = []
         for i in range(0, 15):
             time.sleep(2)
-            request = self.create_request_data(priority=random.randint(0, 15))
-            requests_list.append({'time': request.date_time})
+            request_data = self.create_request_data(
+                priority=random.randint(0, 15))
+            requests_list.append({'time': request_data.date_time})
         response = self.client.get(reverse('requests'))
         requests_from_context = [datetime.time(request.date_time.hour,
                                                request.date_time.minute,

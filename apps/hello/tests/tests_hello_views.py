@@ -116,14 +116,14 @@ class BioViewsTests(CleanTestCase):
         self.client.login(username='admin', password='admin')
 
         fields_data = {'first_name': 'Ol',
-                        'last_name': 'Al',
-                        'birth_date': '1986-03-28',
-                        'photo': '',
-                        'email': 'alexaled@gmail.com',
-                        'jabber': 'alexaled1@khavr.com',
-                        'skype': 'alexaled',
-                        'other_contacts': 'alexaled@ukr.net',
-                        'biography': 'My bio'}
+                       'last_name': 'Al',
+                       'birth_date': datetime.date(1986, 3, 28),
+                       'photo': '',
+                       'email': 'alexaled@gmail.com',
+                       'jabber': 'alexaled1@khavr.com',
+                       'skype': 'alexaled',
+                       'other_contacts': 'alexaled@ukr.net',
+                       'biography': 'My bio'}
 
         resp = self.client.post(
             reverse('update', args=(bio_object.id,)),
@@ -150,7 +150,7 @@ class BioViewsTests(CleanTestCase):
             reverse('update', args=(bio_object.id,)),
             {'first_name': '',
              'last_name': 'Al',
-             'birth_date': '1986-03-28',
+             'birth_date': datetime.date(1986, 3, 28),
              'photo': '',
              'email': 'alexaled@gmail.com',
              'jabber': 'alexaled1@khavr.com',
@@ -174,7 +174,7 @@ class BioViewsTests(CleanTestCase):
 
         fields_data = {'first_name': 'Ol',
                        'last_name': 'Al',
-                       'birth_date': '1986-03-28',
+                       'birth_date': datetime.date(1986, 3, 28),
                        'photo': '',
                        'email': 'alexaled@gmail.com',
                        'jabber': 'alexaled1@khavr.com',
@@ -203,7 +203,7 @@ class BioViewsTests(CleanTestCase):
             reverse('update', args=(bio_object.id,)),
             {'first_name': '',
              'last_name': 'Al',
-             'birth_date': '1986-03-28',
+             'birth_date': datetime.date(1986, 3, 28),
              'photo': '',
              'email': 'alexaled@gmail.com',
              'jabber': 'alexaled1@khavr.com',
