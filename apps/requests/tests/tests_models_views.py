@@ -1,5 +1,7 @@
 import datetime
+import time
 import json
+import random
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -50,15 +52,15 @@ class RequestsModelTests(TestCase):
 
 class RequestsViewsTests(TestCase):
 
-    def create_request_data(self, date_time=datetime.datetime.now()):
+    def create_request_data(self, priority=1):
         """
         Method for creating test data
         :return:
         """
         return RequestData.objects.create(http_request='/home/',
                                           remote_addr='127.0.0.1',
-                                          date_time=date_time,
-                                          viewed=False)
+                                          viewed=False,
+                                          priority=priority)
 
     def test_requests_index_page_context(self):
         """
@@ -100,11 +102,10 @@ class RequestsViewsTests(TestCase):
         :return:
         """
         requests_list = []
-        now = datetime.datetime.now()
         for i in range(0, 15):
-            request_date_time = now + datetime.timedelta(0, 3)
-            self.create_request_data(date_time=request_date_time)
-            requests_list.append({'time': datetime.datetime.now()})
+            time.sleep(2)
+            request = self.create_request_data()
+            requests_list.append({'time': request.date_time})
         response = self.client.get(reverse('requests'))
         requests_from_context = [datetime.time(request.date_time.hour,
                                                request.date_time.minute,
@@ -134,3 +135,29 @@ class RequestsViewsTests(TestCase):
                                     )
         response_dict = json.loads(response.content)
         self.assertEqual(response_dict['success'], False)
+
+    def test_last_ten_requests_with_priority(self):
+        """
+        Checked requests middleware, last 10 commits with priority order
+        :return:
+        """
+        requests_list = []
+        for i in range(0, 15):
+            time.sleep(2)
+            request = self.create_request_data(priority=random.randint(0, 15))
+            requests_list.append({'time': request.date_time})
+        response = self.client.get(reverse('requests'))
+        requests_from_context = [datetime.time(request.date_time.hour,
+                                               request.date_time.minute,
+                                               request.date_time.second)
+                                 for request in
+                                 response.context['object_list']]
+        requests_db = RequestData.objects.all().order_by('-priority',
+                                                         '-date_time')[0:10]
+        requests_from_db = [datetime.time(request.date_time.hour,
+                                          request.date_time.minute,
+                                          request.date_time.second)
+                            for request in requests_db]
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(requests_from_context), 10)
+        self.assertEqual(requests_from_db, requests_from_context)
